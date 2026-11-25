@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4f46e5">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<title>Essai Proctor</title>
+<style>
+:root{--bg:#eef3ff;--card:#ffffff;--card-soft:#f7f9ff;--text:#172554;--muted:#64748b;--accent:#7c3aed;--curve:#ea580c;--accent-2:#ec4899;--accent-3:#0ea5e9;--border:#dbe4f5;--ok:#059669;--ok-soft:#d1fae5;--danger:#dc2626}
+:root[data-theme="dark"]{--bg:#12172a;--card:#1c2338;--card-soft:#252d48;--text:#edf2ff;--muted:#aab5d3;--accent:#a78bfa;--curve:#fb923c;--accent-2:#f472b6;--accent-3:#38bdf8;--border:#39445f;--ok:#34d399;--ok-soft:#173e39;--danger:#fb7185}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]):not([data-theme="dark"]){--bg:#12172a;--card:#1c2338;--card-soft:#252d48;--text:#edf2ff;--muted:#aab5d3;--accent:#a78bfa;--curve:#fb923c;--accent-2:#f472b6;--accent-3:#38bdf8;--border:#39445f;--ok:#34d399;--ok-soft:#173e39;--danger:#fb7185}
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(135deg,var(--bg) 0%,var(--card-soft) 55%,color-mix(in srgb,var(--accent-3) 12%,var(--bg)) 100%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:12px;min-height:100vh}
+.wrap{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+h1{font-size:1.35rem;margin:0;color:var(--text);letter-spacing:-.035em}
+.title-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand-mark{width:56px;height:56px;flex:none;border-radius:15px;box-shadow:0 5px 14px #4f46e133}
+.brand-caption{margin:3px 0 0;color:var(--muted);font-size:.68rem;font-weight:600;letter-spacing:.04em}
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.theme-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 14px;border-radius:999px;font-weight:650;white-space:nowrap;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border:0;box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 25%,transparent)}
+.install-btn{min-height:44px;padding:0 14px;border:0;border-radius:999px;background:linear-gradient(120deg,var(--accent-3),var(--ok));color:#fff;font-weight:650;white-space:nowrap;box-shadow:0 5px 14px color-mix(in srgb,var(--accent-3) 20%,transparent)}
+.offline-status{min-height:1.2em}
+h2{font-size:1.05rem;margin:0 0 10px}
+.muted{color:var(--muted);font-size:.85rem;margin:0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 8px 24px color-mix(in srgb,var(--accent) 7%,transparent)}
+.card:nth-of-type(3){border-top:3px solid var(--accent-2)}
+.card:nth-of-type(4){border-top:3px solid var(--accent-3)}
+label{font-size:.85rem;color:var(--muted);display:block;margin-bottom:4px}
+input{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:1rem}
+select{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:1rem}
+input::placeholder{color:var(--muted);opacity:.75}
+.field{display:flex;flex-direction:column;margin-bottom:12px}
+.field:last-child{margin-bottom:0}
+.points{display:flex;flex-direction:column;gap:12px}
+.point-fields{display:flex;flex-direction:column;gap:12px}
+.points.horizontal .point-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.points.horizontal .field{margin:0}
+.point{min-width:0;border:1px solid var(--border);border-radius:10px;padding:12px;background:var(--card-soft)}
+.point.best{border-color:var(--ok);background:linear-gradient(135deg,var(--ok-soft),var(--card));box-shadow:0 0 0 2px color-mix(in srgb,var(--ok) 28%,transparent)}
+.point-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.point-title{font-weight:600}
+.calc-list{margin-top:12px;border-top:1px solid var(--border);padding-top:10px}
+.calc-row{display:flex;justify-content:space-between;padding:4px 0;font-variant-numeric:tabular-nums}
+.calc-row span:first-child{color:var(--muted)}
+.calc-row span:last-child{font-weight:600}
+button{padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;font-size:.95rem}
+button:hover{transform:translateY(-1px);box-shadow:0 4px 12px color-mix(in srgb,var(--accent) 18%,transparent)}
+.btn-row{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}
+.metadata-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.trial-controls{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}
+.trial-controls button,.trial-controls select{min-height:46px;font-weight:650;transition:transform .18s,box-shadow .18s,background .18s}
+.trial-controls .trial-save{color:#fff;border:0;background:linear-gradient(120deg,var(--accent),var(--accent-2));box-shadow:0 5px 14px color-mix(in srgb,var(--accent) 22%,transparent)}
+.trial-controls .trial-new{color:var(--accent-3);border-color:color-mix(in srgb,var(--accent-3) 45%,var(--border));background:color-mix(in srgb,var(--accent-3) 8%,var(--card))}
+.trial-controls .trial-load{color:#fff;border:0;background:linear-gradient(120deg,var(--accent-3),var(--ok));box-shadow:0 5px 14px color-mix(in srgb,var(--accent-3) 20%,transparent)}
+.trial-controls .trial-delete{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 38%,var(--border));background:color-mix(in srgb,var(--danger) 7%,var(--card))}
+.trial-controls select{border-color:color-mix(in srgb,var(--accent-3) 45%,var(--border));background:var(--card-soft)}
+.compare-panel{margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+.compare-panel h3{font-size:.98rem;margin:0 0 8px}
+.saved-test-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin:10px 0}
+.saved-test-choice{display:flex;align-items:center;gap:8px;margin:0;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--card-soft);color:var(--text)}
+.saved-test-choice input{width:auto;margin:0}
+.compare-result table,.print-table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:12px}
+.compare-result th,.compare-result td,.print-table th,.print-table td{border:1px solid var(--border);padding:8px;text-align:left}
+.compare-result th,.print-table th{background:var(--card-soft)}
+.file-input{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;clip-path:inset(50%);border:0}
+#print-report{display:none}
+.layout-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.layout-btn{display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:6px 12px;border:1px solid var(--border);border-radius:999px;background:var(--card-soft);font-weight:650;transition:background .2s,border-color .2s,transform .2s,box-shadow .2s}
+.layout-btn[aria-pressed="true"]{color:#fff;border-color:transparent;background:linear-gradient(110deg,var(--accent),var(--accent-3));box-shadow:0 5px 16px color-mix(in srgb,var(--accent) 25%,transparent)}
+.layout-icon{font-size:1.15rem;line-height:1}
+.layout-switch{width:34px;height:20px;display:inline-flex;align-items:center;padding:2px;border-radius:999px;background:color-mix(in srgb,currentColor 18%,transparent);transition:background .2s}
+.layout-switch span{width:16px;height:16px;border-radius:50%;background:currentColor;transition:transform .2s}
+.layout-btn[aria-pressed="true"] .layout-switch span{transform:translateX(14px);background:#fff}
+.btn-row button{min-height:44px}
+.save-status{min-height:1.2em;margin-top:8px}
+.point input:focus,.field input:focus{outline:2px solid var(--accent-3);outline-offset:1px;border-color:var(--accent-3)}
+button:focus-visible{outline:3px solid var(--accent-3);outline-offset:2px}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.res > div{background:linear-gradient(135deg,var(--card-soft),color-mix(in srgb,var(--accent) 8%,var(--card)));border:1px solid var(--border);border-radius:10px;padding:12px}
+.res > div:nth-child(2){background:linear-gradient(135deg,var(--card-soft),color-mix(in srgb,var(--accent-2) 10%,var(--card)))}
+.res > div:last-child{background:linear-gradient(135deg,var(--card-soft),color-mix(in srgb,var(--ok) 10%,var(--card)))}
+.big{font-size:1.4rem;font-weight:700;font-variant-numeric:tabular-nums}
+.estimate-values{display:flex;flex-direction:column;gap:3px;margin-top:4px;font-weight:650;font-variant-numeric:tabular-nums}
+.chart-scroll{width:100%;overflow-x:auto}
+#chart{width:100%;height:auto;display:block}
+.chart-legend{display:flex;flex-wrap:wrap;gap:10px 20px;margin-top:8px;color:var(--muted);font-size:.85rem}
+.legend-item{display:inline-flex;align-items:center;gap:7px}
+.legend-symbol{position:relative;display:inline-block;width:20px;height:12px;flex:none}
+.legend-measure::before{content:"";position:absolute;left:7px;top:3px;width:7px;height:7px;border-radius:50%;background:var(--accent-3)}
+.legend-guides::before{content:"";position:absolute;left:0;right:0;top:5px;border-top:2px dashed var(--accent-3);opacity:.65}
+.legend-trend::before{content:"";position:absolute;left:0;right:0;top:5px;border-top:3px solid var(--curve)}
+.legend-best::before{content:"";position:absolute;left:6px;top:1px;width:9px;height:9px;border:2px solid var(--ok);border-radius:50%}
+.legend-estimate::before{content:"";position:absolute;left:6px;top:2px;width:8px;height:8px;background:var(--accent-2);transform:rotate(45deg)}
+.chart-note{margin-top:8px}
+.err{color:var(--danger);font-size:.85rem;margin-top:8px;min-height:1em}
+svg{width:100%;height:auto;color:var(--text);display:block}
+.formula{font-family:ui-monospace,Menlo,monospace;font-size:.85rem;background:var(--bg);border-radius:8px;padding:10px;line-height:1.7}
+@media(max-width:640px){.points.horizontal .point-fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.points.horizontal .field:last-child{grid-column:1/-1}}
+@media(max-width:640px){#chart{min-width:640px}}
+@media(max-width:420px){.brand{gap:8px}.brand-mark{width:48px;height:48px}h1{font-size:1.15rem}}
+@media(min-width:641px){.btn-row{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:641px){.trial-controls{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}}
+@media print{
+  @page{size:A4;margin:16mm}
+  body{min-height:0;padding:0;background:#fff;color:#111}
+  .wrap{display:none!important}
+  #print-report{display:block!important;max-width:none;margin:0;color:#111;font-family:Arial,sans-serif}
+  #print-report h1{color:#222;background:none;-webkit-text-fill-color:#222;margin:0 0 8px}
+  #print-report h2{margin:18px 0 8px}
+  #print-report .print-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 16px}
+  #print-report .print-chart{margin-top:12px;break-inside:avoid}
+  #print-report svg{width:100%!important;min-width:0!important;height:auto!important}
+  #print-report table{font-size:10pt}
+  #print-report th,#print-report td{border:1px solid #999;padding:6px}
+  #print-report th{background:#eee!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="title-row">
+  <div class="brand">
+    <img class="brand-mark" src="./icon.svg" alt="">
+    <div>
+      <h1>Essai Proctor</h1>
+      <p class="brand-caption">Créée par NEY</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button id="install-btn" class="install-btn" type="button" hidden onclick="installApp()">Installer l’application</button>
+    <button id="theme-btn" class="theme-btn" type="button" aria-label="Activer le thème sombre" title="Activer le thème sombre" onclick="toggleTheme()">
+      <span id="theme-icon" aria-hidden="true">☾</span>
+      <span id="theme-label">Mode sombre</span>
+    </button>
+  </div>
+</div>
+<p class="muted">Calcul de la densité sèche maximale (DS) et de la teneur en eau optimale. Les décimales peuvent s'écrire avec une virgule.</p>
+<p id="offline-status" class="muted offline-status" role="status" aria-live="polite"></p>
+
+<div class="card">
+  <h2>Essais enregistrés</h2>
+  <div class="metadata-grid">
+    <div class="field">
+      <label for="test-name">Nom de l’essai *</label>
+      <input id="test-name" type="text" placeholder="ex. Proctor chantier A" oninput="saveDraft()" onchange="refreshSavedTests()">
+    </div>
+    <div class="field">
+      <label for="test-material">Matériau</label>
+      <input id="test-material" type="text" placeholder="ex. Grave latéritique" oninput="saveDraft()" onchange="refreshSavedTests()">
+    </div>
+    <div class="field">
+      <label for="test-date">Date de l’essai</label>
+      <input id="test-date" type="date" onchange="saveDraft()">
+    </div>
+    <div class="field">
+      <label for="test-site">Chantier / site</label>
+      <input id="test-site" type="text" placeholder="Nom du chantier" oninput="saveDraft()">
+    </div>
+  </div>
+  <div class="trial-controls">
+    <button class="trial-save" type="button" onclick="saveTest()">✓ Enregistrer l’essai</button>
+    <button class="trial-new" type="button" onclick="newTest()">＋ Nouvel essai</button>
+    <select id="saved-test-select" aria-label="Essais enregistrés"></select>
+    <button class="trial-load" type="button" onclick="loadTest()">↻ Charger l’essai</button>
+    <button class="trial-delete" type="button" onclick="deleteTest()">✕ Supprimer l’essai</button>
+  </div>
+  <p id="test-status" class="muted save-status" role="status" aria-live="polite"></p>
+  <div class="compare-panel">
+    <h3>Comparer des essais enregistrés</h3>
+    <div id="compare-list" class="saved-test-list"></div>
+    <button type="button" onclick="compareTests()">Comparer les essais sélectionnés</button>
+    <div id="compare-result" class="compare-result" aria-live="polite"></div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Paramètres du moule</h2>
+  <div class="field">
+    <label for="vlm">Volume du moule VLM (cm³)</label>
+    <input id="vlm" type="text" inputmode="decimal" placeholder="ex. 943.3" value="" oninput="recalc(); saveDraft()">
+  </div>
+  <p class="muted">Adaptez VLM au moule utilisé (volume mesuré ou indiqué par le fabricant).</p>
+</div>
+
+<div class="card">
+  <h2>Mesures par point</h2>
+  <div class="layout-row">
+    <span class="muted">Disposition des champs</span>
+    <button id="layout-btn" class="layout-btn" type="button" onclick="toggleLayout()" aria-pressed="false">
+      <span id="layout-icon" class="layout-icon" aria-hidden="true">↔</span>
+      <span id="layout-label">Champs horizontaux</span>
+      <span class="layout-switch" aria-hidden="true"><span></span></span>
+    </button>
+  </div>
+  <div id="rows" class="points"></div>
+  <div class="btn-row">
+    <button onclick="addRow()">+ Ajouter un point</button>
+    <button onclick="exportCSV()">Exporter en CSV</button>
+    <button type="button" onclick="document.getElementById('csv-file').click()">Importer un CSV</button>
+    <button type="button" onclick="printReport()">Imprimer / PDF</button>
+    <button onclick="resetAll()">Réinitialiser</button>
+  </div>
+  <input id="csv-file" class="file-input" type="file" accept=".csv,text/csv" onchange="importCSV(event)">
+  <div id="err" class="err"></div>
+  <p id="save-status" class="muted save-status" role="status" aria-live="polite"></p>
+</div>
+
+<div class="card">
+  <h2>Résultats</h2>
+  <div class="res">
+    <div>
+      <div class="muted">Densité sèche maximale</div>
+      <div class="big" id="dsmax">—</div>
+    </div>
+    <div>
+      <div class="muted">Teneur en eau optimale</div>
+      <div class="big" id="wopt">—</div>
+    </div>
+    <div>
+      <div class="muted">Optimum estimé par la courbe (indicatif)</div>
+      <div class="estimate-values">
+        <span id="estimate-w">Tw : —</span>
+        <span id="estimate-ds">DS : —</span>
+      </div>
+      <p class="muted" id="estimate-note">Au moins 3 teneurs en eau distinctes sont nécessaires.</p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Courbe DS = f(Tw)</h2>
+  <div class="chart-scroll">
+    <svg id="chart" viewBox="0 0 720 440" role="img" aria-label="Graphique de densité sèche selon la teneur en eau, avec mesures et courbe de tendance"></svg>
+  </div>
+  <div class="chart-legend" aria-label="Légende du graphique">
+    <span class="legend-item"><i class="legend-symbol legend-measure"></i>Mesures</span>
+    <span class="legend-item"><i class="legend-symbol legend-guides"></i>Repères exacts des mesures</span>
+    <span class="legend-item"><i class="legend-symbol legend-trend"></i>Tendance quadratique</span>
+    <span class="legend-item"><i class="legend-symbol legend-best"></i>Meilleur point mesuré</span>
+    <span class="legend-item"><i class="legend-symbol legend-estimate"></i>Optimum estimé</span>
+  </div>
+  <p id="chart-note" class="muted chart-note">La tendance nécessite au moins 3 teneurs en eau distinctes.</p>
+</div>
+
+<div class="card">
+  <h2>Formules utilisées</h2>
+  <div class="formula">
+    Pm = Mm − PM<br>
+    DH = Pm ÷ VLM<br>
+    DS = DH × 100 ÷ (100 + Tw)
+  </div>
+</div>
+
+</div>
+<div id="print-report"></div>
+
+<script>
+let rows = [];
+let nextId = 1;
+let layout = localStorage.getItem('proctor-layout') === 'horizontal' ? 'horizontal' : 'vertical';
+let activeTestId = null;
+let savedTests = readSavedTests();
+
+function applyLayout() {
+  const container = document.getElementById('rows');
+  const button = document.getElementById('layout-btn');
+  container.classList.toggle('horizontal', layout === 'horizontal');
+  button.setAttribute('aria-pressed', String(layout === 'horizontal'));
+  button.setAttribute('aria-label', layout === 'horizontal' ? 'Afficher les champs verticalement' : 'Afficher les champs horizontalement');
+  document.getElementById('layout-label').textContent = layout === 'horizontal' ? 'Champs horizontaux' : 'Champs verticaux';
+  document.getElementById('layout-icon').textContent = layout === 'horizontal' ? '↔' : '↕';
+}
+
+function toggleLayout() {
+  layout = layout === 'horizontal' ? 'vertical' : 'horizontal';
+  localStorage.setItem('proctor-layout', layout);
+  applyLayout();
+}
+
+function todayISO() {
+  const date = new Date();
+  return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') +
+    '-' + String(date.getDate()).padStart(2, '0');
+}
+
+function readSavedTests() {
+  const stored = localStorage.getItem('proctor-tests');
+  if (!stored) return [];
+  const tests = JSON.parse(stored);
+  return Array.isArray(tests)
+    ? tests.filter(test => test && typeof test.id === 'string' && Array.isArray(test.rows))
+    : [];
+}
+
+function currentTestData() {
+  return {
+    name: document.getElementById('test-name').value.trim(),
+    material: document.getElementById('test-material').value.trim(),
+    date: document.getElementById('test-date').value,
+    site: document.getElementById('test-site').value.trim(),
+    vlm: document.getElementById('vlm').value,
+    rows: rows.map(({ tw, pm, mm }) => ({ tw, pm, mm }))
+  };
+}
+
+function saveDraft() {
+  const draft = currentTestData();
+  draft.activeTestId = activeTestId;
+  localStorage.setItem('proctor-data', JSON.stringify(draft));
+  if (activeTestId) {
+    const index = savedTests.findIndex(test => test.id === activeTestId);
+    if (index >= 0) {
+      savedTests[index] = Object.assign({}, savedTests[index], draft, { id: activeTestId });
+      localStorage.setItem('proctor-tests', JSON.stringify(savedTests));
+    }
+  }
+  document.getElementById('save-status').textContent = 'Mesures enregistrées automatiquement sur cet appareil.';
+  updatePrintReport();
+}
+
+function restoreDraft() {
+  const saved = localStorage.getItem('proctor-data');
+  if (!saved) return false;
+  const draft = JSON.parse(saved);
+  if (!draft || !Array.isArray(draft.rows) || typeof draft.vlm !== 'string' ||
+      !draft.rows.every(row => row && typeof row.tw === 'string' &&
+        typeof row.pm === 'string' && typeof row.mm === 'string')) {
+    localStorage.removeItem('proctor-data');
+    return false;
+  }
+  document.getElementById('vlm').value = draft.vlm === '943.3' ? '' : draft.vlm;
+  document.getElementById('test-name').value = draft.name || '';
+  document.getElementById('test-material').value = draft.material || '';
+  document.getElementById('test-date').value = draft.date || '';
+  document.getElementById('test-site').value = draft.site || '';
+  activeTestId = typeof draft.activeTestId === 'string' &&
+    savedTests.some(test => test.id === draft.activeTestId) ? draft.activeTestId : null;
+  rows = draft.rows.map(row => ({ id: nextId++, tw: row.tw, pm: row.pm, mm: row.mm }));
+  return true;
+}
+
+function refreshSavedTests() {
+  const select = document.getElementById('saved-test-select');
+  const selected = select.value;
+  select.innerHTML = '<option value="">Choisir un essai enregistré</option>' +
+    savedTests.map(test => `<option value="${esc(test.id)}">${esc(test.name || 'Essai sans nom')}</option>`).join('');
+  select.value = savedTests.some(test => test.id === selected) ? selected : activeTestId || '';
+
+  const list = document.getElementById('compare-list');
+  list.innerHTML = savedTests.length
+    ? savedTests.map(test => `<label class="saved-test-choice"><input type="checkbox" name="compare-test" value="${esc(test.id)}"><span>${esc(test.name || 'Essai sans nom')}${test.material ? ' — ' + esc(test.material) : ''}</span></label>`).join('')
+    : '<p class="muted">Enregistrez au moins deux essais pour les comparer.</p>';
+}
+
+function saveTest() {
+  const test = currentTestData();
+  const status = document.getElementById('test-status');
+  if (!test.name) {
+    status.textContent = 'Donnez un nom à l’essai avant de l’enregistrer.';
+    document.getElementById('test-name').focus();
+    return;
+  }
+  recalc();
+  if (document.getElementById('err').textContent) {
+    status.textContent = 'Corrigez les erreurs de saisie avant d’enregistrer l’essai.';
+    return;
+  }
+  if (!activeTestId) activeTestId = Date.now().toString(36) + Math.random().toString(36).slice(2);
+  const existing = savedTests.findIndex(item => item.id === activeTestId);
+  const record = Object.assign({}, test, { id: activeTestId });
+  if (existing < 0) savedTests.push(record);
+  else savedTests[existing] = record;
+  localStorage.setItem('proctor-tests', JSON.stringify(savedTests));
+  saveDraft();
+  refreshSavedTests();
+  document.getElementById('saved-test-select').value = activeTestId;
+  status.textContent = 'Essai enregistré sur cet appareil.';
+}
+
+function newTest() {
+  const hasData = rows.some(row => row.tw || row.pm || row.mm) ||
+    document.getElementById('vlm').value.trim() ||
+    document.getElementById('test-name').value.trim() ||
+    document.getElementById('test-material').value.trim() ||
+    document.getElementById('test-site').value.trim();
+  if (hasData && !window.confirm('Créer un nouvel essai ? Les saisies non enregistrées seront perdues.')) return;
+  saveDraft();
+  activeTestId = null;
+  document.getElementById('test-name').value = '';
+  document.getElementById('test-material').value = '';
+  document.getElementById('test-date').value = todayISO();
+  document.getElementById('test-site').value = '';
+  document.getElementById('vlm').value = '';
+  rows = [];
+  nextId = 1;
+  for (let i = 0; i < 5; i++) rows.push({ id: nextId++, tw: '', pm: '', mm: '' });
+  render();
+  saveDraft();
+  document.getElementById('test-status').textContent = 'Nouvel essai prêt à être saisi.';
+  refreshSavedTests();
+}
+
+function loadTest() {
+  const id = document.getElementById('saved-test-select').value;
+  const test = savedTests.find(item => item.id === id);
+  if (!test) {
+    document.getElementById('test-status').textContent = 'Sélectionnez un essai enregistré à charger.';
+    return;
+  }
+  saveDraft();
+  activeTestId = test.id;
+  document.getElementById('test-name').value = test.name || '';
+  document.getElementById('test-material').value = test.material || '';
+  document.getElementById('test-date').value = test.date || '';
+  document.getElementById('test-site').value = test.site || '';
+  document.getElementById('vlm').value = test.vlm || '';
+  rows = test.rows.map(row => ({ id: nextId++, tw: row.tw || '', pm: row.pm || '', mm: row.mm || '' }));
+  render();
+  saveDraft();
+  document.getElementById('test-status').textContent = 'Essai chargé. Les modifications seront enregistrées automatiquement.';
+}
+
+function deleteTest() {
+  const id = document.getElementById('saved-test-select').value || activeTestId;
+  const test = savedTests.find(item => item.id === id);
+  if (!test) {
+    document.getElementById('test-status').textContent = 'Sélectionnez un essai enregistré à supprimer.';
+    return;
+  }
+  if (!window.confirm(`Supprimer l’essai « ${test.name} » ?`)) return;
+  savedTests = savedTests.filter(item => item.id !== id);
+  localStorage.setItem('proctor-tests', JSON.stringify(savedTests));
+  if (activeTestId === id) activeTestId = null;
+  saveDraft();
+  refreshSavedTests();
+  document.getElementById('test-status').textContent = 'Essai supprimé.';
+}
+
+function testMetrics(test) {
+  const volume = num(test.vlm);
+  const valid = [];
+  if (volume !== null && volume > 0) {
+    test.rows.forEach(row => {
+      const tw = num(row.tw), PM = num(row.pm), Mm = num(row.mm);
+      if (tw !== null && tw >= 0 && PM !== null && PM > 0 && Mm !== null && Mm > PM) {
+        valid.push({ tw, ds: (Mm - PM) / volume * 100 / (100 + tw) });
+      }
+    });
+  }
+  let best = null;
+  valid.forEach(point => { if (!best || point.ds > best.ds) best = point; });
+  const trend = fitQuadratic(valid);
+  return { best, estimate: trend && trend.optimum };
+}
+
+function compareTests() {
+  const selectedIds = [...document.querySelectorAll('input[name="compare-test"]:checked')].map(input => input.value);
+  const tests = selectedIds.map(id => savedTests.find(test => test.id === id)).filter(Boolean);
+  const result = document.getElementById('compare-result');
+  if (tests.length < 2) {
+    result.textContent = 'Sélectionnez au moins deux essais enregistrés.';
+    return;
+  }
+  const rowsHtml = tests.map(test => {
+    const metrics = testMetrics(test);
+    return `<tr><td>${esc(test.name || 'Essai sans nom')}</td><td>${esc(test.material || '—')}</td><td>${metrics.best ? fmt(metrics.best.ds) + ' g/cm³' : '—'}</td><td>${metrics.best ? fmt(metrics.best.tw) + ' %' : '—'}</td><td>${metrics.estimate ? fmt(metrics.estimate.ds) + ' g/cm³' : '—'}</td><td>${metrics.estimate ? fmt(metrics.estimate.tw) + ' %' : '—'}</td></tr>`;
+  }).join('');
+  result.innerHTML = `<table><thead><tr><th>Essai</th><th>Matériau</th><th>DS max mesurée</th><th>Tw optimale mesurée</th><th>DS estimée</th><th>Tw estimée</th></tr></thead><tbody>${rowsHtml}</tbody></table>`;
+}
+
+function csvCell(value) {
+  return '"' + String(value).replace(/"/g, '""') + '"';
+}
+
+function exportCSV() {
+  const volume = vlm();
+  const test = currentTestData();
+  const lines = [
+    ['Essai', 'Matériau', 'Date', 'Site', 'Point', 'Tw (%)', 'PM (g)', 'Mm (g)', 'Pm (g)', 'DH (g/cm3)', 'DS (g/cm3)', 'VLM (cm3)']
+  ];
+  rows.forEach((row, index) => {
+    const tw = num(row.tw), PM = num(row.pm), Mm = num(row.mm);
+    const pm = PM !== null && PM > 0 && Mm !== null && Mm > PM ? Mm - PM : null;
+    const dh = pm !== null && volume !== null && volume > 0 ? pm / volume : null;
+    const ds = dh !== null && tw !== null && tw >= 0 ? dh * 100 / (100 + tw) : null;
+    lines.push([
+      test.name, test.material, test.date, test.site, index + 1, row.tw, row.pm, row.mm,
+      pm === null ? '' : fmt(pm),
+      dh === null ? '' : fmt(dh),
+      ds === null ? '' : fmt(ds),
+      test.vlm
+    ]);
+  });
+  const content = '\uFEFF' + lines.map(line => line.map(csvCell).join(';')).join('\r\n');
+  const url = URL.createObjectURL(new Blob([content], { type: 'text/csv;charset=utf-8' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'essai-proctor.csv';
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function parseCSV(text) {
+  const content = text.replace(/^\uFEFF/, '');
+  const firstLine = content.split(/\r?\n/, 1)[0];
+  const delimiter = firstLine.indexOf(';') >= 0 ? ';' : ',';
+  const records = [];
+  let record = [], cell = '', quoted = false;
+
+  for (let i = 0; i < content.length; i++) {
+    const character = content[i];
+    if (character === '"') {
+      if (quoted && content[i + 1] === '"') {
+        cell += '"';
+        i++;
+      } else {
+        quoted = !quoted;
+      }
+    } else if (character === delimiter && !quoted) {
+      record.push(cell);
+      cell = '';
+    } else if (character === '\n' && !quoted) {
+      record.push(cell.replace(/\r$/, ''));
+      records.push(record);
+      record = [];
+      cell = '';
+    } else {
+      cell += character;
+    }
+  }
+  if (quoted) throw new Error('Le fichier CSV contient un champ entre guillemets mal fermé.');
+  if (cell || record.length) {
+    record.push(cell.replace(/\r$/, ''));
+    records.push(record);
+  }
+  return records.filter(row => row.some(value => value.trim() !== ''));
+}
+
+async function importCSV(event) {
+  const input = event.target;
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const error = document.getElementById('err');
+  try {
+    const records = parseCSV(await file.text());
+    if (records.length < 2) throw new Error('Le fichier ne contient aucune ligne de mesure.');
+    const headers = records[0];
+    const twIndex = headers.findIndex(header => /\btw\b/i.test(header) || /teneur.*eau/i.test(header));
+    const pmIndex = headers.findIndex(header => /^PM\b/i.test(header));
+    const mmIndex = headers.findIndex(header => /^Mm\b/i.test(header));
+    const vlmIndex = headers.findIndex(header => /^VLM\b/i.test(header));
+    const nameIndex = headers.findIndex(header => /^Essai\b/i.test(header));
+    const materialIndex = headers.findIndex(header => /^Mat[ée]riau\b/i.test(header));
+    const dateIndex = headers.findIndex(header => /^Date\b/i.test(header));
+    const siteIndex = headers.findIndex(header => /^Site\b/i.test(header));
+    if (twIndex < 0 || pmIndex < 0 || mmIndex < 0) {
+      throw new Error('Colonnes requises introuvables : Tw, PM et Mm.');
+    }
+    const importedRows = records.slice(1).map((record, rowIndex) => {
+      const row = {
+        tw: (record[twIndex] || '').trim(),
+        pm: (record[pmIndex] || '').trim(),
+        mm: (record[mmIndex] || '').trim()
+      };
+      for (const [label, value] of [['Tw', row.tw], ['PM', row.pm], ['Mm', row.mm]]) {
+        if (value && num(value) === null) {
+          throw new Error(`Ligne ${rowIndex + 2} : valeur ${label} invalide.`);
+        }
+      }
+      return row;
+    });
+    if (!importedRows.length) throw new Error('Aucune mesure trouvée dans le fichier.');
+    const hasCurrentData = rows.some(row => row.tw || row.pm || row.mm) ||
+      document.getElementById('vlm').value.trim() ||
+      document.getElementById('test-name').value.trim() ||
+      document.getElementById('test-material').value.trim() ||
+      document.getElementById('test-site').value.trim();
+    if (hasCurrentData &&
+        !window.confirm('Remplacer les mesures actuellement affichées par celles du fichier CSV ?')) return;
+
+    if (vlmIndex >= 0 && records[1][vlmIndex]) {
+      document.getElementById('vlm').value = records[1][vlmIndex].trim();
+    }
+    if (nameIndex >= 0) document.getElementById('test-name').value = (records[1][nameIndex] || '').trim();
+    if (materialIndex >= 0) document.getElementById('test-material').value = (records[1][materialIndex] || '').trim();
+    if (dateIndex >= 0) document.getElementById('test-date').value = (records[1][dateIndex] || '').trim();
+    if (siteIndex >= 0) document.getElementById('test-site').value = (records[1][siteIndex] || '').trim();
+    rows = importedRows.map(row => ({ id: nextId++, tw: row.tw, pm: row.pm, mm: row.mm }));
+    render();
+    saveDraft();
+    error.textContent = '';
+    document.getElementById('test-status').textContent = `${rows.length} ligne(s) importée(s) depuis le CSV.`;
+  } catch (reason) {
+    error.textContent = reason instanceof Error ? reason.message : 'Impossible de lire ce fichier CSV.';
+  } finally {
+    input.value = '';
+  }
+}
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  const isDark = theme === 'dark';
+  const action = isDark ? 'Activer le thème clair' : 'Activer le thème sombre';
+  document.getElementById('theme-icon').textContent = isDark ? '☀' : '☾';
+  document.getElementById('theme-label').textContent = isDark ? 'Mode clair' : 'Mode sombre';
+  const button = document.getElementById('theme-btn');
+  button.setAttribute('aria-label', action);
+  button.title = action;
+}
+
+function toggleTheme() {
+  const current = document.documentElement.dataset.theme ||
+    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem('proctor-theme', next);
+}
+
+const savedTheme = localStorage.getItem('proctor-theme');
+if (savedTheme === 'light' || savedTheme === 'dark') {
+  applyTheme(savedTheme);
+} else {
+  applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+}
+
+function num(v) {
+  const value = String(v).trim();
+  if (!/^[+-]?(?:\d+(?:[.,]\d*)?|[.,]\d+)$/.test(value)) return null;
+  const n = Number(value.replace(',', '.'));
+  return Number.isFinite(n) ? n : null;
+}
+
+function fmt(value) {
+  return value.toFixed(2).replace('.', ',');
+}
+
+function esc(v) {
+  return String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+
+function vlm() {
+  return num(document.getElementById('vlm').value);
+}
+
+function addRow(d) {
+  const data = d || { tw: '', pm: '', mm: '' };
+  rows.push({ id: nextId++, tw: data.tw, pm: data.pm, mm: data.mm });
+  render();
+  saveDraft();
+}
+
+function removeRow(id) {
+  rows = rows.filter(r => r.id !== id);
+  render();
+  saveDraft();
+}
+
+function upd(id, field, value) {
+  const r = rows.find(x => x.id === id);
+  if (r) r[field] = value;
+  recalc();
+  saveDraft();
+}
+
+function resetAll() {
+  if ((rows.some(row => row.tw || row.pm || row.mm) ||
+       document.getElementById('vlm').value.trim() !== '') &&
+      !window.confirm('Effacer les mesures saisies et recommencer ?')) return;
+  rows = [];
+  nextId = 1;
+  document.getElementById('vlm').value = '';
+  for (let i = 0; i < 5; i++) {
+    rows.push({ id: nextId++, tw: '', pm: '', mm: '' });
+  }
+  render();
+  saveDraft();
+}
+
+function render() {
+  const container = document.getElementById('rows');
+  container.innerHTML = rows.map((r, i) => `
+    <div class="point" data-id="${r.id}">
+      <div class="point-head">
+        <span class="point-title">Point ${i + 1}</span>
+        <button onclick="removeRow(${r.id})" aria-label="Supprimer le point ${i + 1}">✕ Supprimer</button>
+      </div>
+      <div class="point-fields">
+        <div class="field">
+          <label for="tw-${r.id}">Tw : teneur en eau (%)</label>
+          <input id="tw-${r.id}" inputmode="decimal" placeholder="ex. 8" value="${esc(r.tw)}" oninput="upd(${r.id}, 'tw', this.value)">
+        </div>
+        <div class="field">
+          <label for="pm-input-${r.id}">PM : poids du moule (g)</label>
+          <input id="pm-input-${r.id}" inputmode="decimal" placeholder="ex. 4250" value="${esc(r.pm)}" oninput="upd(${r.id}, 'pm', this.value)">
+        </div>
+        <div class="field">
+          <label for="mm-${r.id}">Mm : poids du moule + matériau (g)</label>
+          <input id="mm-${r.id}" inputmode="decimal" placeholder="ex. 6100" value="${esc(r.mm)}" oninput="upd(${r.id}, 'mm', this.value)">
+        </div>
+      </div>
+      <div class="calc-list">
+        <div class="calc-row"><span>Pm (g)</span><span id="pm-${r.id}">—</span></div>
+        <div class="calc-row"><span>DH (g/cm³)</span><span id="dh-${r.id}">—</span></div>
+        <div class="calc-row"><span>DS (g/cm³)</span><span id="ds-${r.id}">—</span></div>
+      </div>
+    </div>`).join('');
+  recalc();
+}
+
+function fitQuadratic(pts) {
+  const distinctTw = [...new Set(pts.map(p => p.tw))];
+  if (distinctTw.length < 3) return null;
+
+  const minTw = Math.min(...distinctTw);
+  const maxTw = Math.max(...distinctTw);
+  const center = (minTw + maxTw) / 2;
+  const scale = (maxTw - minTw) / 2;
+  if (!Number.isFinite(scale) || scale <= 0) return null;
+
+  const matrix = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+  pts.forEach(p => {
+    const z = (p.tw - center) / scale;
+    const terms = [z * z, z, 1];
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 3; col++) matrix[row][col] += terms[row] * terms[col];
+      matrix[row][3] += terms[row] * p.ds;
+    }
+  });
+
+  for (let col = 0; col < 3; col++) {
+    let pivot = col;
+    for (let row = col + 1; row < 3; row++) {
+      if (Math.abs(matrix[row][col]) > Math.abs(matrix[pivot][col])) pivot = row;
+    }
+    if (Math.abs(matrix[pivot][col]) < 1e-12) return null;
+    [matrix[col], matrix[pivot]] = [matrix[pivot], matrix[col]];
+
+    const divisor = matrix[col][col];
+    for (let j = col; j < 4; j++) matrix[col][j] /= divisor;
+    for (let row = 0; row < 3; row++) {
+      if (row === col) continue;
+      const factor = matrix[row][col];
+      for (let j = col; j < 4; j++) matrix[row][j] -= factor * matrix[col][j];
+    }
+  }
+
+  const [a, b, c] = matrix.map(row => row[3]);
+  const predict = tw => {
+    const z = (tw - center) / scale;
+    return a * z * z + b * z + c;
+  };
+  let optimum = null;
+  if (a < -1e-12) {
+    const z = -b / (2 * a);
+    if (z >= -1 && z <= 1) {
+      const tw = center + z * scale;
+      const ds = predict(tw);
+      if (Number.isFinite(ds)) optimum = { tw, ds };
+    }
+  }
+  return { predict, optimum };
+}
+
+function recalc() {
+  const V = vlm();
+  const errors = [];
+  const valid = [];
+
+  const volumeInput = document.getElementById('vlm').value.trim();
+  const hasMeasurements = rows.some(row => row.tw.trim() || row.pm.trim() || row.mm.trim());
+  if ((V === null && (volumeInput || hasMeasurements)) || (V !== null && V <= 0)) {
+    errors.push('Le volume du moule VLM doit être un nombre positif.');
+  }
+
+  rows.forEach((r, i) => {
+    const tw = num(r.tw);
+    const PM = num(r.pm);
+    const Mm = num(r.mm);
+    const entered = [r.tw, r.pm, r.mm].filter(value => value.trim() !== '').length;
+    let pm = null, dh = null, ds = null;
+
+    if (entered > 0 && entered < 3) {
+      errors.push(`Point ${i + 1} incomplet : renseignez Tw, PM et Mm.`);
+    }
+    if (r.tw.trim() && tw === null) errors.push(`Point ${i + 1} : Tw doit être un nombre valide.`);
+    if (r.pm.trim() && PM === null) errors.push(`Point ${i + 1} : PM doit être un nombre valide.`);
+    if (r.mm.trim() && Mm === null) errors.push(`Point ${i + 1} : Mm doit être un nombre valide.`);
+    if (PM !== null && PM <= 0) errors.push(`Point ${i + 1} : PM doit être supérieur à zéro.`);
+    if (Mm !== null && Mm <= 0) errors.push(`Point ${i + 1} : Mm doit être supérieur à zéro.`);
+    if (tw !== null && tw < 0) errors.push(`Point ${i + 1} : Tw ne peut pas être négatif.`);
+
+    if (PM !== null && PM > 0 && Mm !== null && Mm > 0) {
+      pm = Mm - PM;
+      if (pm <= 0) {
+        errors.push(`Point ${i + 1} : Mm doit être supérieur à PM.`);
+        pm = null;
+      }
+    }
+    if (pm !== null && V !== null && V > 0) {
+      dh = pm / V;
+    }
+    if (dh !== null && tw !== null && tw >= 0) {
+      ds = dh * 100 / (100 + tw);
+      valid.push({ id: r.id, n: i + 1, tw, ds });
+    }
+
+    document.getElementById('pm-' + r.id).textContent = pm === null ? '—' : fmt(pm);
+    document.getElementById('dh-' + r.id).textContent = dh === null ? '—' : fmt(dh);
+    document.getElementById('ds-' + r.id).textContent = ds === null ? '—' : fmt(ds);
+  });
+
+  document.getElementById('err').textContent = errors.join(' ');
+
+  let best = null;
+  valid.forEach(p => { if (!best || p.ds > best.ds) best = p; });
+
+  document.querySelectorAll('.point').forEach(el => el.classList.remove('best'));
+  if (best) {
+    const el = document.querySelector(`.point[data-id="${best.id}"]`);
+    if (el) el.classList.add('best');
+    document.getElementById('dsmax').textContent = fmt(best.ds) + ' g/cm³';
+    document.getElementById('wopt').textContent = fmt(best.tw) + ' %';
+  } else {
+    document.getElementById('dsmax').textContent = '—';
+    document.getElementById('wopt').textContent = '—';
+  }
+
+  const trend = fitQuadratic(valid);
+  const estimateNote = document.getElementById('estimate-note');
+  if (trend && trend.optimum) {
+    document.getElementById('estimate-w').textContent = 'Tw : ' + fmt(trend.optimum.tw) + ' %';
+    document.getElementById('estimate-ds').textContent = 'DS : ' + fmt(trend.optimum.ds) + ' g/cm³';
+    estimateNote.textContent = 'Estimation indicative à partir des mesures.';
+  } else {
+    document.getElementById('estimate-w').textContent = 'Tw : —';
+    document.getElementById('estimate-ds').textContent = 'DS : —';
+    estimateNote.textContent = trend
+      ? 'Aucun maximum estimé dans la plage mesurée.'
+      : 'Au moins 3 teneurs en eau distinctes sont nécessaires.';
+  }
+
+  drawChart(valid, best, trend);
+  updatePrintReport();
+}
+
+function drawChart(pts, best, trend) {
+  const svg = document.getElementById('chart');
+  const note = document.getElementById('chart-note');
+  if (pts.length < 2) {
+    svg.setAttribute('viewBox', '0 0 720 440');
+    svg.innerHTML = '<text x="360" y="220" text-anchor="middle" fill="currentColor" font-size="16">Saisissez au moins 2 mesures valides</text>';
+    note.textContent = 'Ajoutez au moins 2 mesures pour afficher le graphique et 3 teneurs en eau distinctes pour la tendance.';
+    return;
+  }
+
+  const W = 720, L = 78, R = 24, T = 28, B = 66;
+  const xs = pts.map(p => p.tw), ys = pts.map(p => p.ds);
+  const dataX0 = Math.min(...xs), dataX1 = Math.max(...xs);
+  const x0 = 0, x1 = Math.max(1, Math.ceil(dataX1) + 1);
+  const trendPoints = [];
+  if (trend) {
+    for (let i = 0; i <= 80; i++) {
+      const x = dataX0 + (dataX1 - dataX0) * i / 80;
+      trendPoints.push({ tw: x, ds: trend.predict(x) });
+    }
+  }
+  const allY = ys.concat(trendPoints.map(p => p.ds).filter(Number.isFinite));
+  let y0 = Math.min(...allY), y1 = Math.max(...allY);
+  const yPad = (y1 - y0) * 0.12 || Math.max(Math.abs(y0) * 0.02, 0.01);
+  y0 -= yPad;
+  y1 += yPad;
+  const yStep = Math.max(0.01, Math.ceil((y1 - y0) / 40 * 100) / 100);
+  y0 = Math.floor((y0 + 1e-10) / yStep) * yStep;
+  y1 = Math.ceil((y1 - 1e-10) / yStep) * yStep;
+  const yIntervals = Math.max(1, Math.round((y1 - y0) / yStep));
+  const H = Math.max(440, T + B + yIntervals * 24);
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+  const sx = x => L + (x - x0) / (x1 - x0) * (W - L - R);
+  const sy = y => T + (1 - (y - y0) / (y1 - y0)) * (H - T - B);
+  const plotBottom = H - B;
+
+  let s = '';
+  s += `<rect x="${L}" y="${T}" width="${W - L - R}" height="${plotBottom - T}" rx="4" fill="var(--card-soft)" opacity=".7"/>`;
+
+  for (let xv = x0; xv <= x1; xv += 1) {
+    const px = sx(xv);
+    s += `<line x1="${px}" y1="${T}" x2="${px}" y2="${plotBottom}" stroke="var(--border)" opacity=".8"/>`;
+    s += `<text x="${px}" y="${plotBottom + 22}" text-anchor="middle" fill="currentColor" font-size="13">${xv.toFixed(0)}</text>`;
+  }
+  for (let i = 0; i <= yIntervals; i++) {
+    const yv = y0 + i * yStep;
+    const py = sy(yv);
+    s += `<line x1="${L}" y1="${py}" x2="${W - R}" y2="${py}" stroke="var(--border)" opacity=".8"/>`;
+    s += `<text x="${L - 10}" y="${py + 4}" text-anchor="end" fill="currentColor" font-size="13">${fmt(yv)}</text>`;
+  }
+
+  s += `<text x="${(L + W - R) / 2}" y="${H - 12}" text-anchor="middle" fill="currentColor" font-size="14">Teneur en eau Tw (%)</text>`;
+  s += `<text x="20" y="${(T + plotBottom) / 2}" text-anchor="middle" fill="currentColor" font-size="14" transform="rotate(-90 20 ${(T + plotBottom) / 2})">Densité sèche DS (g/cm³)</text>`;
+
+  const sorted = [...pts].sort((a, b) => a.tw - b.tw);
+  sorted.forEach(p => {
+    const px = sx(p.tw), py = sy(p.ds);
+    s += `<g stroke="var(--accent-3)" stroke-width="1.25" stroke-dasharray="3 4" opacity=".55"><line x1="${L}" y1="${py}" x2="${px}" y2="${py}"/><line x1="${px}" y1="${py}" x2="${px}" y2="${plotBottom}"/><line x1="${L - 5}" y1="${py}" x2="${L}" y2="${py}" stroke-dasharray="none"/><line x1="${px}" y1="${plotBottom}" x2="${px}" y2="${plotBottom + 5}" stroke-dasharray="none"/></g>`;
+  });
+  s += `<polyline fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 5" opacity=".65" points="${sorted.map(p => `${sx(p.tw)},${sy(p.ds)}`).join(' ')}"/>`;
+  if (trend && trendPoints.length) {
+    s += `<polyline fill="none" stroke="var(--curve)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" points="${trendPoints.map(p => `${sx(p.tw)},${sy(p.ds)}`).join(' ')}"/>`;
+  }
+  sorted.forEach(p => {
+    s += `<circle cx="${sx(p.tw)}" cy="${sy(p.ds)}" r="5" fill="var(--accent-3)" stroke="var(--card)" stroke-width="2"><title>Tw : ${fmt(p.tw)} %, DS : ${fmt(p.ds)} g/cm³</title></circle>`;
+  });
+  if (best) {
+    s += `<circle cx="${sx(best.tw)}" cy="${sy(best.ds)}" r="9" fill="none" stroke="var(--ok)" stroke-width="3"/>`;
+  }
+  if (trend && trend.optimum) {
+    const ex = sx(trend.optimum.tw), ey = sy(trend.optimum.ds);
+    s += `<path d="M ${ex} ${ey - 8} L ${ex + 8} ${ey} L ${ex} ${ey + 8} L ${ex - 8} ${ey} Z" fill="var(--accent-2)" stroke="var(--card)" stroke-width="2"/>`;
+  }
+
+  if (!trend) {
+    note.textContent = 'Les repères pointillés relient chaque mesure aux axes. Ajoutez au moins 3 teneurs en eau distinctes pour afficher la tendance.';
+  } else if (!trend.optimum) {
+    note.textContent = 'Les repères pointillés indiquent les mesures. Aucun maximum estimé ne se trouve dans la plage mesurée.';
+  } else {
+    note.textContent = 'Les repères pointillés relient chaque mesure à ses valeurs sur les axes. La tendance et l’optimum sont indicatifs.';
+  }
+
+  svg.innerHTML = s;
+}
+
+function updatePrintReport() {
+  const test = currentTestData();
+  const volume = num(test.vlm);
+  const measurementRows = rows.map((row, index) => {
+    const tw = num(row.tw), PM = num(row.pm), Mm = num(row.mm);
+    const pm = PM !== null && PM > 0 && Mm !== null && Mm > PM ? Mm - PM : null;
+    const dh = pm !== null && volume !== null && volume > 0 ? pm / volume : null;
+    const ds = dh !== null && tw !== null && tw >= 0 ? dh * 100 / (100 + tw) : null;
+    if (![row.tw, row.pm, row.mm].some(value => value.trim())) return '';
+    return `<tr><td>${index + 1}</td><td>${esc(row.tw || '—')}</td><td>${esc(row.pm || '—')}</td><td>${esc(row.mm || '—')}</td><td>${pm === null ? '—' : fmt(pm)}</td><td>${dh === null ? '—' : fmt(dh)}</td><td>${ds === null ? '—' : fmt(ds)}</td></tr>`;
+  }).filter(Boolean).join('');
+  const chart = document.getElementById('chart').cloneNode(true);
+  chart.id = 'report-chart';
+  document.getElementById('print-report').innerHTML = `
+    <h1>Rapport d’essai Proctor</h1>
+    <div class="print-meta">
+      <div><strong>Essai :</strong> ${esc(test.name || '—')}</div>
+      <div><strong>Matériau :</strong> ${esc(test.material || '—')}</div>
+      <div><strong>Date :</strong> ${esc(test.date || '—')}</div>
+      <div><strong>Chantier / site :</strong> ${esc(test.site || '—')}</div>
+      <div><strong>Volume du moule :</strong> ${volume !== null ? fmt(volume) : '—'} cm³</div>
+    </div>
+    <h2>Résultats</h2>
+    <p><strong>Densité sèche maximale mesurée :</strong> ${esc(document.getElementById('dsmax').textContent)}</p>
+    <p><strong>Teneur en eau optimale mesurée :</strong> ${esc(document.getElementById('wopt').textContent)}</p>
+    <p><strong>Optimum estimé (indicatif) :</strong> ${esc(document.getElementById('estimate-w').textContent)} — ${esc(document.getElementById('estimate-ds').textContent)}</p>
+    <h2>Mesures et calculs</h2>
+    <table class="print-table"><thead><tr><th>Point</th><th>Tw (%)</th><th>PM (g)</th><th>Mm (g)</th><th>Pm (g)</th><th>DH (g/cm³)</th><th>DS (g/cm³)</th></tr></thead><tbody>${measurementRows || '<tr><td colspan="7">Aucune mesure saisie</td></tr>'}</tbody></table>
+    <h2>Courbe DS = f(Tw)</h2>
+    <div class="print-chart">${chart.outerHTML}</div>
+    <p>Les résultats estimés par la courbe sont indicatifs et doivent être vérifiés avec les mesures du laboratoire.</p>`;
+}
+
+function printReport() {
+  updatePrintReport();
+  window.print();
+}
+
+let deferredInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  document.getElementById('install-btn').hidden = false;
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  document.getElementById('install-btn').hidden = true;
+  document.getElementById('offline-status').textContent = 'Application installée sur cet appareil.';
+});
+
+async function installApp() {
+  const status = document.getElementById('offline-status');
+  if (!deferredInstallPrompt) {
+    status.textContent = 'Sur iPhone : utilisez Partager puis « Sur l’écran d’accueil ». Sur Android, ouvrez le menu du navigateur et choisissez Installer l’application.';
+    return;
+  }
+  const prompt = deferredInstallPrompt;
+  deferredInstallPrompt = null;
+  try {
+    await prompt.prompt();
+    const choice = await prompt.userChoice;
+    status.textContent = choice.outcome === 'accepted'
+      ? 'Installation lancée.'
+      : 'Installation annulée.';
+    if (choice.outcome !== 'accepted') document.getElementById('install-btn').hidden = false;
+  } catch (error) {
+    status.textContent = 'Impossible de lancer l’installation : ' + error.message;
+    document.getElementById('install-btn').hidden = false;
+  }
+}
+
+function setupOfflineSupport() {
+  const status = document.getElementById('offline-status');
+  if (location.protocol === 'file:') {
+    status.textContent = 'Ce fichier fonctionne déjà hors connexion. Pour installer l’application sur téléphone, hébergez-la en HTTPS.';
+    return;
+  }
+  if (!('serviceWorker' in navigator)) {
+    status.textContent = 'Ce navigateur ne prend pas en charge le cache hors connexion.';
+    return;
+  }
+  navigator.serviceWorker.register('./sw.js')
+    .then(() => {
+      status.textContent = navigator.onLine
+        ? 'Mode hors connexion prêt après cette première visite.'
+        : 'Vous êtes hors connexion. La version enregistrée de l’application est utilisée.';
+    })
+    .catch(error => {
+      status.textContent = 'Impossible d’activer le mode hors connexion : ' + error.message;
+    });
+}
+
+applyLayout();
+if (restoreDraft()) {
+  render();
+  document.getElementById('save-status').textContent = 'Mesures enregistrées récupérées depuis cet appareil.';
+} else {
+  for (let i = 0; i < 5; i++) rows.push({ id: nextId++, tw: '', pm: '', mm: '' });
+  render();
+}
+if (!document.getElementById('test-date').value) {
+  document.getElementById('test-date').value = todayISO();
+}
+refreshSavedTests();
+updatePrintReport();
+setupOfflineSupport();
+</script>
+</body>
+</html>

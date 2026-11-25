@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4338ca"/>
+      <stop offset="1" stop-color="#0891b2"/>
+    </linearGradient>
+    <linearGradient id="curve" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a5f3fc"/>
+      <stop offset="1" stop-color="#67e8f9"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#background)"/>
+  <circle cx="256" cy="235" r="190" fill="#fff" fill-opacity=".06"/>
+  <path d="M157 344V145h111c126 0 126 137 0 137H157" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-opacity=".96" stroke-width="34"/>
+  <path d="M171 257c35-4 55-39 86-40 23-1 43 18 65 9 18-7 30-22 44-40" fill="none" stroke="url(#curve)" stroke-linecap="round" stroke-linejoin="round" stroke-width="21"/>
+  <circle cx="171" cy="257" r="9" fill="#fff"/>
+  <circle cx="257" cy="217" r="9" fill="#fff"/>
+  <circle cx="322" cy="226" r="9" fill="#fff"/>
+  <text x="256" y="439" fill="#fff" font-family="system-ui, sans-serif" font-size="36" font-weight="750" letter-spacing="6" text-anchor="middle">PROCTOR</text>
+</svg>
