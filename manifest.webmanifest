@@ -3,7 +3,7 @@
   "short_name": "Proctor",
   "description": "Calcul et analyse des résultats d’un essai Proctor.",
   "lang": "fr",
-  "start_url": "./Proctor.html",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
