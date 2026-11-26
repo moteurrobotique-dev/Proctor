@@ -1,6 +1,6 @@
 const CACHE_NAME = 'proctor-offline-v9';
 const APP_FILES = [
-  './Proctor.html',
+  './index.html',
   './manifest.webmanifest',
   './icon.svg',
   './icon-192.png',
